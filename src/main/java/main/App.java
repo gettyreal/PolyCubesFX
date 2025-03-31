@@ -8,6 +8,7 @@ import javafx.stage.Stage;
 import javafx.scene.Group;
 import javafx.scene.shape.Box;
 import javafx.scene.transform.Translate; 
+import javafx.scene.transform.Rotate;
 /**
  * JavaFX App
  */
@@ -23,16 +24,19 @@ public class App extends Application {
       Box box = new Box();  
       
       //Setting the properties of the Box 
-      box.setWidth(200.0); 
-      box.setHeight(200.0);  
-      box.setDepth(200.0);
+      box.setWidth(50.0); 
+      box.setHeight(50.0);  
+      box.setDepth(50.0);
 
       Translate translate = new Translate();       
       translate.setX(200); 
       translate.setY(150); 
       translate.setZ(25); 
+
+      Rotate rotateY = new Rotate(45 , Rotate.Y_AXIS);
+        Rotate rotateZ = new Rotate(30 , Rotate.Z_AXIS);
       
-      box.getTransforms().addAll(translate);
+      box.getTransforms().addAll(translate, rotateY, rotateZ);
 	  
       //Creating a Group object  
       Group root = new Group(box); 
