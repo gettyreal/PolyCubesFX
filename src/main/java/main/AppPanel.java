@@ -16,15 +16,16 @@ public class AppPanel extends Application {
 
     Box[][][] cubeGrid;
     public final int cubeSize = 50;
+    Group grid;
 
     private double lastX = 0;
     private double lastY = 0;
     private double angleX = 0;
     private double angleY = 0;
 
-    private Rotate rotateX = new Rotate(0, Rotate.X_AXIS);
-    private Rotate rotateY = new Rotate(0, Rotate.Y_AXIS);
-    private Translate translateRoot = new Translate(500, 500, 50);
+    private Rotate rotateX = new Rotate(15, Rotate.X_AXIS);
+    private Rotate rotateY = new Rotate(45, Rotate.Y_AXIS);
+    private Translate translateRoot = new Translate(screenWidth / 2 - 125, screenHeight / 2 - 125, 0);
 
     @Override
     public void start(Stage stage) { 
@@ -34,53 +35,43 @@ public class AppPanel extends Application {
       stage.show(); 
    }
 
-    public Scene createScene() {
-        createCubeGrid(4);
-        
+    public Scene createScene() {        
         // Creating group and scene to visualize the cubes
-        Group root = new Group();
-        for (Box[][] plane : cubeGrid) {
-            for (Box[] row : plane) {
-                for (Box cube : row) {
-                    root.getChildren().add(cube);
-                }
-            }
-        }
+        this.grid = new Group();
+        createCubeGrid(5);
 
         // Apply rotation transforms to the entire group
-        root.getTransforms().add(translateRoot);
-        root.getTransforms().addAll(rotateX, rotateY);
+        grid.getTransforms().add(translateRoot);
+        grid.getTransforms().addAll(rotateX, rotateY);
 
-        Scene scene = new Scene(root, screenWidth, screenHeight);
+        Scene scene = new Scene(grid, screenWidth, screenHeight);
         scene.setFill(Color.web("#252323"));
 
         // handling mouse events
         scene.setOnMousePressed(event -> handleMousePressed(event));
-        scene.setOnMouseDragged(event -> handleMouseDragged(event, root));
+        scene.setOnMouseDragged(event -> handleMouseDragged(event, grid));
 
         return scene;
     }
 
     // function to create a grid of cubes
     void createCubeGrid(int gridSize) {
-        int widthOffset = (screenWidth - (gridSize * cubeSize)) / 2;
-        int heightOffset = (screenHeight - (gridSize * cubeSize)) / 2;
 
-        cubeGrid = new Box[gridSize][gridSize][gridSize];
         for (int x = 0; x < gridSize; x++) {
             for (int y = 0; y < gridSize; y++) {
                 for (int z = 0; z < gridSize; z++) {
-                    Box cube = new Box(cubeSize, cubeSize, cubeSize);
-                    cube.setTranslateX(x * cubeSize + widthOffset);
-                    cube.setTranslateY(y * cubeSize + heightOffset);
-                    cube.setTranslateZ(z * cubeSize);
+                    // Create a new Box (cell) at position (x, y, z)
+                    Box box = new Box(cubeSize, cubeSize, cubeSize);
+                    box.setTranslateX(x * cubeSize); // Positioning in X direction
+                    box.setTranslateY(y * cubeSize); // Positioning in Y direction
+                    box.setTranslateZ(z * cubeSize); // Positioning in Z direction
 
-                    cube.setDrawMode(javafx.scene.shape.DrawMode.LINE);
-
-                    cubeGrid[x][y][z] = cube;
+                    // Add the box to the grid group
+                    grid.getChildren().add(box);
                 }
             }
         }
+
     }
 
     void handleMousePressed(MouseEvent event) {
@@ -94,7 +85,7 @@ public class AppPanel extends Application {
         double speedRotation = 0.25;
 
         // Rotate around the Y-axis
-        angleY -= speedRotation * deltaX;
+        angleY += speedRotation * deltaX;
 
         // Rotate around the X-axis
         angleX += speedRotation * deltaY;
