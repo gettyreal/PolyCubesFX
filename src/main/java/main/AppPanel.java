@@ -11,8 +11,8 @@ import javafx.application.Application;
 import javafx.scene.Group;
 
 public class AppPanel extends Application {
-    public final int screenWidth = 1000;
-    public final int screenHeight = 750;
+    public final int screenWidth = 1920;
+    public final int screenHeight = 1000;
 
     Box[][][] cubeGrid;
     public final int cubeSize = 50;
@@ -23,8 +23,8 @@ public class AppPanel extends Application {
     private double angleX = 0;
     private double angleY = 0;
 
-    private Rotate rotateX = new Rotate(15, Rotate.X_AXIS);
-    private Rotate rotateY = new Rotate(45, Rotate.Y_AXIS);
+    private Rotate rotateX = new Rotate(15, 125, 125, 125, Rotate.X_AXIS);
+    private Rotate rotateY = new Rotate(45, 125, 125, 125, Rotate.Y_AXIS);
     private Translate translateRoot = new Translate(screenWidth / 2 - 125, screenHeight / 2 - 125, 0);
 
     @Override
