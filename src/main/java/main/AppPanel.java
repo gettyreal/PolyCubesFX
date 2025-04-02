@@ -5,6 +5,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
+import javafx.scene.shape.Line;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
@@ -56,7 +57,7 @@ public class AppPanel extends Application {
         scene.setOnMousePressed(event -> handleMousePressed(event));
         scene.setOnMouseDragged(event -> handleMouseDragged(event, grid));
 
-        addPolyCube(management.polycubes.get(9));
+        addPolyCube(management.polycubes.get(132));
 
         return scene;
     }
@@ -66,24 +67,51 @@ public class AppPanel extends Application {
         Polycube inputPolycube = Management.generateBasic2Polycube();
         management.generatePolycubes(gridSize - 2, inputPolycube);
         management.translatePolycubes();
-        management.printPolycubes();
     }
 
     void gridSetup() {
         // Creating group and scene to visualize the cubes
         this.grid = new Group();
         createCubeGrid(gridSize);
+        addAxes();
 
         // Apply rotation transforms to the entire group
         final double gridOffset = gridSize * cubeSize / 2;
-        this.rotateX = new Rotate(15, gridOffset, gridOffset, gridOffset, Rotate.X_AXIS);
-        this.rotateY = new Rotate(45, gridOffset, gridOffset, gridOffset, Rotate.Y_AXIS);
+        this.rotateX = new Rotate(0, gridOffset, gridOffset, gridOffset, Rotate.X_AXIS);
+        this.rotateY = new Rotate(0, gridOffset, gridOffset, gridOffset, Rotate.Y_AXIS);
         this.translateRoot = new Translate(screenWidth / 2 - gridOffset, screenHeight / 2 - gridOffset, 0);
         grid.getTransforms().add(translateRoot);
         grid.getTransforms().addAll(rotateX, rotateY);
     }
 
     // function to create a grid of cubes
+    void addAxes() {
+        final int  axisLength = gridSize * cubeSize;
+
+        // X-axis
+        Line xAxis = new Line(-25, axisLength - 25, axisLength + 25, axisLength - 25);
+        xAxis.setTranslateZ(- 25);
+        xAxis.setStroke(Color.RED);
+        xAxis.setStrokeWidth(2);
+        grid.getChildren().add(xAxis);
+
+        // Y-axis
+        Line yAxis = new Line(-25, -75, -25, axisLength - 25);
+        yAxis.setStroke(Color.BLUE);
+        yAxis.setStrokeWidth(2);
+        yAxis.setTranslateZ(-25);
+        grid.getChildren().add(yAxis);
+
+        // Z-axis
+        Line zAxis = new Line(-25, 0, -25, axisLength + 75);
+        zAxis.getTransforms().add(new Rotate(90, Rotate.X_AXIS));
+        zAxis.setStroke(Color.GREEN);
+        zAxis.setStrokeWidth(2);
+        zAxis.setTranslateZ(-25);
+        zAxis.setTranslateY(axisLength - 25);
+        grid.getChildren().add(zAxis);
+    }
+
     void createCubeGrid(int gridSize) {
         for (int x = 0; x < gridSize; x++) {
             for (int y = gridSize - 1; y >= 0; y--) {
