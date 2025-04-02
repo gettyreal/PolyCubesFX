@@ -21,7 +21,7 @@ public class AppPanel extends Application {
 
     public final int cubeSize = 50;
     Group grid;
-    final int gridSize = 4;
+    final int gridSize = 5;
 
     private double lastX = 0;
     private double lastY = 0;
@@ -56,8 +56,7 @@ public class AppPanel extends Application {
         // handling mouse events
         scene.setOnMousePressed(event -> handleMousePressed(event));
         scene.setOnMouseDragged(event -> handleMouseDragged(event, grid));
-
-        addPolyCube(management.polycubes.get(132));
+        addPolyCube(management.polycubes.get(2480));
 
         return scene;
     }
@@ -67,6 +66,7 @@ public class AppPanel extends Application {
         Polycube inputPolycube = Management.generateBasic2Polycube();
         management.generatePolycubes(gridSize - 2, inputPolycube);
         management.translatePolycubes();
+        System.out.println("Polycubes generated: " + management.polycubes.size());
     }
 
     void gridSetup() {
