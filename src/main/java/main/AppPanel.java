@@ -20,7 +20,7 @@ public class AppPanel extends Application {
 
     public final int cubeSize = 50;
     Group grid;
-    final int gridSize = 3;
+    final int gridSize = 4;
 
     private double lastX = 0;
     private double lastY = 0;
@@ -55,7 +55,7 @@ public class AppPanel extends Application {
         scene.setOnMousePressed(event -> handleMousePressed(event));
         scene.setOnMouseDragged(event -> handleMouseDragged(event, grid));
 
-        addPolyCube(management.polycubes.get(1));
+        //addPolyCube(management.polycubes.get(2));
 
         return scene;
     }
@@ -64,6 +64,8 @@ public class AppPanel extends Application {
         this.management = new Management();
         Polycube inputPolycube = Management.generateBasic2Polycube();
         management.generatePolycubes(gridSize - 2, inputPolycube);
+        management.translatePolycubes();
+        management.printPolycubes();
     }
 
     void gridSetup() {
@@ -82,9 +84,8 @@ public class AppPanel extends Application {
 
     // function to create a grid of cubes
     void createCubeGrid(int gridSize) {
-
         for (int x = 0; x < gridSize; x++) {
-            for (int y = 0; y < gridSize; y++) {
+            for (int y = gridSize - 1; y >= 0; y--) {
                 for (int z = 0; z < gridSize; z++) {
                     // Create a new Box (functioning as a cell) at position (x, y, z)
                     Box box = new Box(cubeSize, cubeSize, cubeSize); // create the cell
@@ -93,17 +94,16 @@ public class AppPanel extends Application {
 
                     // set material and box coordinates
                     box.setTranslateX(x * cubeSize); 
-                    box.setTranslateY(y * cubeSize);
+                    box.setTranslateY((gridSize - 1 - y) * cubeSize);
                     box.setTranslateZ(z * cubeSize);
                     box.setMaterial(cubeMaterial);
-                    // setting box id to match coordinate sistem of polyCubes
+                    // setting box id to match coordinate system of polyCubes
                     box.setId("box_" + x + "_" + y + "_" + z);
                     // Add the box to the grid group
                     grid.getChildren().add(box);
                 }
             }
         }
-
     }
 
     void addPolyCube(Polycube polycube) {

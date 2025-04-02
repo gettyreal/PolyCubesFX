@@ -32,7 +32,7 @@ public class Cube {
         this.id = createId(x, y, z);
     }
 
-    private String createId(int x, int y, int z) {
+    public String createId(int x, int y, int z) {
         return "box_" + x + "_" + y + "_" + z;
     }
 

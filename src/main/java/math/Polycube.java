@@ -55,6 +55,27 @@ public class Polycube {
         }
     }
 
+    public Cube calculateBoundingMinimumCube () {
+        int minX = 23;
+        int minY = 23;
+        int minZ = 23;
+
+        for (Cube cube : cubes) {
+            if (cube.x < minX) {
+                minX = cube.x;
+            }
+            if (cube.y < minY) {
+                minY = cube.y;
+            }
+            if (cube.z < minZ) {
+                minZ = cube.z;
+            }
+        }
+        
+        Cube minCube = new Cube(minX, minY, minZ);
+        return minCube;
+    }
+
     public void rotateX() {
         for (Cube cube : cubes) {
             // rotate the cube around the x-axis
@@ -79,6 +100,24 @@ public class Polycube {
             int tempX = cube.x;
             cube.x = -cube.y;
             cube.y = tempX;
+        }
+    }
+
+    public void translateX() {
+        for (Cube cube : cubes) {
+            cube.x ++;
+        }
+    }
+
+    public void translateY() {
+        for (Cube cube : cubes) {
+            cube.y ++;
+        }
+    }
+
+    public void translateZ() {
+        for (Cube cube : cubes) {
+            cube.z ++;
         }
     }
 
