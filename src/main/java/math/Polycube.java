@@ -55,35 +55,36 @@ public class Polycube {
         }
     }
 
-    public Cube calculateBoundingMinimumCube () {
+    public Cube calculateBoundingMinimumCube() {
         int minX = Integer.MAX_VALUE;
         int minY = Integer.MAX_VALUE;
         int minZ = Integer.MAX_VALUE;
 
         for (Cube cube : cubes) {
-            if (cube.x < minX) {
-                minX = cube.x;
-            }
-            if (cube.y < minY) {
-                minY = cube.y;
-            }
-            if (cube.z < minZ) {
-                minZ = cube.z;
-            }
+            minX = Math.min(minX, cube.x);
+            minY = Math.min(minY, cube.y);
+            minZ = Math.min(minZ, cube.z);
         }
-        
-        Cube minCube = new Cube(minX, minY, minZ);
-        return minCube;
+
+        return new Cube(minX, minY, minZ); // Ensure a new Cube object is created
     }
 
     public void translatePolycube(Cube translationPivotCube) {
-        for(Cube cube : this.cubes) {
-            // translate the cube to the new position
-            cube.x = cube.x - translationPivotCube.x;
-            cube.y = cube.y - translationPivotCube.y;
-            cube.z = cube.z - translationPivotCube.z;
-            cube.setID(cube.x, cube.y, cube.z);
+        int pivotX = translationPivotCube.x;
+        int pivotY = translationPivotCube.y;
+        int pivotZ = translationPivotCube.z;
+
+        Set<Cube> translatedCubes = new HashSet<>();
+        for (Cube cube : this.cubes) {
+            Cube translatedCube = new Cube(
+                cube.x - pivotX,
+                cube.y - pivotY,
+                cube.z - pivotZ
+            );
+            translatedCube.setID(translatedCube.x, translatedCube.y, translatedCube.z);
+            translatedCubes.add(translatedCube);
         }
+        this.cubes = translatedCubes; // Replace with translated cubes
     }
 
     public void rotateX() {
@@ -135,21 +136,13 @@ public class Polycube {
         if (this.cubes.size() != polycube.cubes.size()) {
             return false;
         }
-        boolean isEqual = true;
         for (Cube cube : this.cubes) {
-            boolean found = false;
-            for (Cube otherCube : polycube.cubes) {
-                if (cube.isEqual(otherCube)) {
-                    found = true;
-                    break;
-                }
-            }
+            boolean found = polycube.cubes.stream().anyMatch(c -> c.isEqual(cube));
             if (!found) {
-                isEqual = false;
-                break;
+                return false;
             }
         }
-        return isEqual;
+        return true;
     }
 
     public void printPolycube() {

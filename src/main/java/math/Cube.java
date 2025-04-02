@@ -48,6 +48,6 @@ public class Cube {
     }
 
     public boolean isEqual(Cube cube) {
-        return this.x == cube.x && this.y == cube.y && this.z == cube.z;
+        return this.x == cube.x && this.y == cube.y && this.z == cube.z && this.id.equals(cube.id);
     }
 }

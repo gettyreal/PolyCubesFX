@@ -15,37 +15,22 @@ public class Management {
             for (int i = 1; i <= 6; i++) {
                 Cube newCube = new Cube();
                 switch (i) {
-                    case 1: // x + 1
-                        newCube.setCoordinates(cube.x + 1, cube.y, cube.z);
-                        break;
-                    case 2: // x - 1
-                        newCube.setCoordinates(cube.x - 1, cube.y, cube.z);
-                        break;
-                    case 3: // y + 1
-                        newCube.setCoordinates(cube.x, cube.y + 1, cube.z);
-                        break;
-                    case 4: // y - 1
-                        newCube.setCoordinates(cube.x, cube.y - 1, cube.z);
-                        break;
-                    case 5: // z + 1
-                        newCube.setCoordinates(cube.x, cube.y, cube.z + 1);
-                        break;
-                    case 6: // z - 1
-                        newCube.setCoordinates(cube.x, cube.y, cube.z - 1);
-                        break;
+                    case 1: newCube.setCoordinates(cube.x + 1, cube.y, cube.z); break;
+                    case 2: newCube.setCoordinates(cube.x - 1, cube.y, cube.z); break;
+                    case 3: newCube.setCoordinates(cube.x, cube.y + 1, cube.z); break;
+                    case 4: newCube.setCoordinates(cube.x, cube.y - 1, cube.z); break;
+                    case 5: newCube.setCoordinates(cube.x, cube.y, cube.z + 1); break;
+                    case 6: newCube.setCoordinates(cube.x, cube.y, cube.z - 1); break;
                 }
-
                 newCube.setID(newCube.x, newCube.y, newCube.z);
 
-                // to add filter restriction.
                 if (!isCubeInList(newCube, filterCubes)) {
-                    // check if the new cube isnt already in the polycube
-                    Polycube newPolyCube = new Polycube(inputPolyCube); // create a new polycube from the input polycube
-                    newPolyCube.addCube(newCube); // add the new cube to the polycube
-                    if (cubeNum == 1) { // last iteration
-                        this.polycubes.add(newPolyCube); // add the polycube to the list of polycubes
+                    Polycube newPolyCube = new Polycube(inputPolyCube);
+                    newPolyCube.addCube(newCube);
+                    if (cubeNum == 1) {
+                        this.polycubes.add(newPolyCube);
                     } else {
-                        generatePolycubes(cubeNum - 1, newPolyCube); // recursive call to add more cubes
+                        generatePolycubes(cubeNum - 1, newPolyCube);
                     }
                 }
             }
@@ -104,9 +89,9 @@ public class Management {
     }
 
     public void translatePolycubes() {
-        for(Polycube polycube : this.polycubes) {
-            Cube pivotPolycube = polycube.calculateBoundingMinimumCube();
-            polycube.translatePolycube(pivotPolycube);
+        for (Polycube polycube : this.polycubes) {
+            Cube pivotCube = polycube.calculateBoundingMinimumCube();
+            polycube.translatePolycube(pivotCube);
         }
     }
 

@@ -34,21 +34,21 @@ public class AppPanel extends Application {
     Management management;
 
     @Override
-    public void start(Stage stage) { 
-      // visualizing window
-      stage.setTitle("PolyCubes");
-      stage.setScene(this.createScene()); 
-      stage.show(); 
-   }
+    public void start(Stage stage) {
+        // visualizing window
+        stage.setTitle("PolyCubes");
+        stage.setScene(this.createScene());
+        stage.show();
+    }
 
-    public Scene createScene() {       
-        //setupping the grid containing the Polycube
+    public Scene createScene() {
+        // setupping management of math part
+        managementSetup();
+
+        // setupping the grid containing the Polycube
         gridSetup();
 
-        //setupping management of math part 
-        managementSetup(); 
-
-        //creating a new scene
+        // creating a new scene
         Scene scene = new Scene(grid, screenWidth, screenHeight);
         scene.setFill(Color.web("#252323"));
 
@@ -56,7 +56,7 @@ public class AppPanel extends Application {
         scene.setOnMousePressed(event -> handleMousePressed(event));
         scene.setOnMouseDragged(event -> handleMouseDragged(event, grid));
 
-        //addPolyCube(management.polycubes.get(management.polycubes.size() - 40)); // add the last polycube to the grid
+        addPolyCube(management.polycubes.get(9));
 
         return scene;
     }
@@ -65,7 +65,7 @@ public class AppPanel extends Application {
         this.management = new Management();
         Polycube inputPolycube = Management.generateBasic2Polycube();
         management.generatePolycubes(gridSize - 2, inputPolycube);
-        //management.translatePolycubes();
+        management.translatePolycubes();
         management.printPolycubes();
     }
 
@@ -90,11 +90,11 @@ public class AppPanel extends Application {
                 for (int z = 0; z < gridSize; z++) {
                     // Create a new Box (functioning as a cell) at position (x, y, z)
                     Box box = new Box(cubeSize, cubeSize, cubeSize); // create the cell
-                    PhongMaterial cubeMaterial = new PhongMaterial(); //new material for transparent color
+                    PhongMaterial cubeMaterial = new PhongMaterial(); // new material for transparent color
                     cubeMaterial.setDiffuseColor(Color.web("#00000000"));
 
                     // set material and box coordinates
-                    box.setTranslateX(x * cubeSize); 
+                    box.setTranslateX(x * cubeSize);
                     box.setTranslateY((gridSize - 1 - y) * cubeSize);
                     box.setTranslateZ(z * cubeSize);
                     box.setMaterial(cubeMaterial);
@@ -108,7 +108,7 @@ public class AppPanel extends Application {
     }
 
     void addPolyCube(Polycube polycube) {
-        for(Cube cube : polycube.cubes) {
+        for (Cube cube : polycube.cubes) {
             for (int i = 0; i < grid.getChildren().size(); i++) {
                 Box box = (Box) grid.getChildren().get(i);
                 if (box.getId().equals(cube.id)) {
