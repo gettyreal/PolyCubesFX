@@ -21,7 +21,7 @@ public class AppPanel extends Application {
 
     public final int cubeSize = 50;
     Group grid;
-    final int gridSize = 5;
+    final int gridSize = 7;
 
     private double lastX = 0;
     private double lastY = 0;
@@ -56,7 +56,7 @@ public class AppPanel extends Application {
         // handling mouse events
         scene.setOnMousePressed(event -> handleMousePressed(event));
         scene.setOnMouseDragged(event -> handleMouseDragged(event, grid));
-        addPolyCube(management.polycubes.get(2480));
+        addPolyCube(management.polycubes.get(1000000));
 
         return scene;
     }
@@ -92,13 +92,13 @@ public class AppPanel extends Application {
         Line xAxis = new Line(-25, axisLength - 25, axisLength + 25, axisLength - 25);
         xAxis.setTranslateZ(- 25);
         xAxis.setStroke(Color.RED);
-        xAxis.setStrokeWidth(2);
+        xAxis.setStrokeWidth(3);
         grid.getChildren().add(xAxis);
 
         // Y-axis
         Line yAxis = new Line(-25, -75, -25, axisLength - 25);
         yAxis.setStroke(Color.BLUE);
-        yAxis.setStrokeWidth(2);
+        yAxis.setStrokeWidth(3);
         yAxis.setTranslateZ(-25);
         grid.getChildren().add(yAxis);
 
@@ -106,7 +106,7 @@ public class AppPanel extends Application {
         Line zAxis = new Line(-25, 0, -25, axisLength + 75);
         zAxis.getTransforms().add(new Rotate(90, Rotate.X_AXIS));
         zAxis.setStroke(Color.GREEN);
-        zAxis.setStrokeWidth(2);
+        zAxis.setStrokeWidth(3);
         zAxis.setTranslateZ(-25);
         zAxis.setTranslateY(axisLength - 25);
         grid.getChildren().add(zAxis);
