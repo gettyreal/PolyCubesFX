@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Polycube {
-    Set<Cube> cubes = new HashSet<Cube>();
+    public Set<Cube> cubes = new HashSet<Cube>();
 
     // constructor
     public Polycube() {

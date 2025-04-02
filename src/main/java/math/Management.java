@@ -8,7 +8,6 @@ import java.util.Set;
 public class Management {
     public ArrayList<Polycube> polycubes = new ArrayList<Polycube>(); // list of all polycubes
     public ArrayList<Polycube> finalPolycubes = new ArrayList<Polycube>();
-    Polycube templateCube;
 
     public void generatePolycubes(int cubeNum, Polycube inputPolyCube) {
         Set<Cube> filterCubes = new HashSet<>(inputPolyCube.cubes);
@@ -35,6 +34,8 @@ public class Management {
                         newCube.setCoordinates(cube.x, cube.y, cube.z - 1);
                         break;
                 }
+
+                newCube.setID(newCube.x, newCube.y, newCube.z);
 
                 // to add filter restriction.
                 if (!isCubeInList(newCube, filterCubes)) {
@@ -113,7 +114,7 @@ public class Management {
         return isInList;
     }
 
-    public Polycube generateBasic2Polycube() {
+    public static Polycube generateBasic2Polycube() {
         // generates the first 2 cubes in a polycube
         Polycube polycube = new Polycube();
         polycube.addCube(1, 0, 0); // add the first cube
@@ -122,7 +123,7 @@ public class Management {
 
     public void printPolycubes() {
         // prints all the polycubes in the list
-        for (Polycube polycube : this.finalPolycubes) {
+        for (Polycube polycube : this.polycubes) {
             polycube.printPolycube();
         }
     }

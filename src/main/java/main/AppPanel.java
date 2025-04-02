@@ -3,10 +3,14 @@ package main;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
+import math.Cube;
+import math.Management;
+import math.Polycube;
 import javafx.application.Application;
 import javafx.scene.Group;
 
@@ -14,18 +18,20 @@ public class AppPanel extends Application {
     public final int screenWidth = 1920;
     public final int screenHeight = 1000;
 
-    Box[][][] cubeGrid;
     public final int cubeSize = 50;
     Group grid;
+    final int gridSize = 3;
 
     private double lastX = 0;
     private double lastY = 0;
     private double angleX = 0;
     private double angleY = 0;
 
-    private Rotate rotateX = new Rotate(15, 125, 125, 125, Rotate.X_AXIS);
-    private Rotate rotateY = new Rotate(45, 125, 125, 125, Rotate.Y_AXIS);
-    private Translate translateRoot = new Translate(screenWidth / 2 - 125, screenHeight / 2 - 125, 0);
+    private Rotate rotateX;
+    private Rotate rotateY;
+    private Translate translateRoot;
+
+    Management management;
 
     @Override
     public void start(Stage stage) { 
@@ -35,15 +41,13 @@ public class AppPanel extends Application {
       stage.show(); 
    }
 
-    public Scene createScene() {        
-        // Creating group and scene to visualize the cubes
-        this.grid = new Group();
-        createCubeGrid(5);
+    public Scene createScene() {   
+        //setupping management of math part 
+        managementSetup();     
+        //setupping the grid containing the Polycube
+        gridSetup();
 
-        // Apply rotation transforms to the entire group
-        grid.getTransforms().add(translateRoot);
-        grid.getTransforms().addAll(rotateX, rotateY);
-
+        //creating a new scene
         Scene scene = new Scene(grid, screenWidth, screenHeight);
         scene.setFill(Color.web("#252323"));
 
@@ -51,7 +55,29 @@ public class AppPanel extends Application {
         scene.setOnMousePressed(event -> handleMousePressed(event));
         scene.setOnMouseDragged(event -> handleMouseDragged(event, grid));
 
+        addPolyCube(management.polycubes.get(1));
+
         return scene;
+    }
+
+    void managementSetup() {
+        this.management = new Management();
+        Polycube inputPolycube = Management.generateBasic2Polycube();
+        management.generatePolycubes(gridSize - 2, inputPolycube);
+    }
+
+    void gridSetup() {
+        // Creating group and scene to visualize the cubes
+        this.grid = new Group();
+        createCubeGrid(gridSize);
+
+        // Apply rotation transforms to the entire group
+        final double gridOffset = gridSize * cubeSize / 2;
+        this.rotateX = new Rotate(15, gridOffset, gridOffset, gridOffset, Rotate.X_AXIS);
+        this.rotateY = new Rotate(45, gridOffset, gridOffset, gridOffset, Rotate.Y_AXIS);
+        this.translateRoot = new Translate(screenWidth / 2 - gridOffset, screenHeight / 2 - gridOffset, 0);
+        grid.getTransforms().add(translateRoot);
+        grid.getTransforms().addAll(rotateX, rotateY);
     }
 
     // function to create a grid of cubes
@@ -60,18 +86,39 @@ public class AppPanel extends Application {
         for (int x = 0; x < gridSize; x++) {
             for (int y = 0; y < gridSize; y++) {
                 for (int z = 0; z < gridSize; z++) {
-                    // Create a new Box (cell) at position (x, y, z)
-                    Box box = new Box(cubeSize, cubeSize, cubeSize);
-                    box.setTranslateX(x * cubeSize); // Positioning in X direction
-                    box.setTranslateY(y * cubeSize); // Positioning in Y direction
-                    box.setTranslateZ(z * cubeSize); // Positioning in Z direction
+                    // Create a new Box (functioning as a cell) at position (x, y, z)
+                    Box box = new Box(cubeSize, cubeSize, cubeSize); // create the cell
+                    PhongMaterial cubeMaterial = new PhongMaterial(); //new material for transparent color
+                    cubeMaterial.setDiffuseColor(Color.web("#00000000"));
 
+                    // set material and box coordinates
+                    box.setTranslateX(x * cubeSize); 
+                    box.setTranslateY(y * cubeSize);
+                    box.setTranslateZ(z * cubeSize);
+                    box.setMaterial(cubeMaterial);
+                    // setting box id to match coordinate sistem of polyCubes
+                    box.setId("box_" + x + "_" + y + "_" + z);
                     // Add the box to the grid group
                     grid.getChildren().add(box);
                 }
             }
         }
 
+    }
+
+    void addPolyCube(Polycube polycube) {
+        for(Cube cube : polycube.cubes) {
+            for (int i = 0; i < grid.getChildren().size(); i++) {
+                Box box = (Box) grid.getChildren().get(i);
+                if (box.getId().equals(cube.id)) {
+                    PhongMaterial cubeMaterial = new PhongMaterial();
+                    cubeMaterial.setDiffuseColor(Color.web("#69D1C5"));
+                    box.setMaterial(cubeMaterial);
+                    System.out.println("Cube added at: " + cube.id);
+                    break;
+                }
+            }
+        }
     }
 
     void handleMousePressed(MouseEvent event) {
@@ -85,7 +132,7 @@ public class AppPanel extends Application {
         double speedRotation = 0.25;
 
         // Rotate around the Y-axis
-        angleY += speedRotation * deltaX;
+        angleY -= speedRotation * deltaX;
 
         // Rotate around the X-axis
         angleX += speedRotation * deltaY;
