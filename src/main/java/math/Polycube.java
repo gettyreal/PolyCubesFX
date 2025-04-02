@@ -56,9 +56,9 @@ public class Polycube {
     }
 
     public Cube calculateBoundingMinimumCube () {
-        int minX = 23;
-        int minY = 23;
-        int minZ = 23;
+        int minX = Integer.MAX_VALUE;
+        int minY = Integer.MAX_VALUE;
+        int minZ = Integer.MAX_VALUE;
 
         for (Cube cube : cubes) {
             if (cube.x < minX) {
@@ -74,6 +74,16 @@ public class Polycube {
         
         Cube minCube = new Cube(minX, minY, minZ);
         return minCube;
+    }
+
+    public void translatePolycube(Cube translationPivotCube) {
+        for(Cube cube : this.cubes) {
+            // translate the cube to the new position
+            cube.x = cube.x - translationPivotCube.x;
+            cube.y = cube.y - translationPivotCube.y;
+            cube.z = cube.z - translationPivotCube.z;
+            cube.setID(cube.x, cube.y, cube.z);
+        }
     }
 
     public void rotateX() {

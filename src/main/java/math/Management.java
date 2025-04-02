@@ -104,23 +104,9 @@ public class Management {
     }
 
     public void translatePolycubes() {
-        for(Polycube polycube : this.polycubes) {  
-            Cube translationPivotCube = polycube.calculateBoundingMinimumCube();    
-            for(Cube cube : polycube.cubes) {
-                for(int i = 0; i < translationPivotCube.x; i++) {
-                    polycube.translateX();
-                }
-
-                for(int i = 0; i < translationPivotCube.y; i++) {
-                    polycube.translateY();
-                }
-
-                for(int i = 0; i < translationPivotCube.z; i++) {
-                    polycube.translateZ();
-                }
-
-                cube.setID(cube.x, cube.y, cube.z);
-            }
+        for(Polycube polycube : this.polycubes) {
+            Cube pivotPolycube = polycube.calculateBoundingMinimumCube();
+            polycube.translatePolycube(pivotPolycube);
         }
     }
 

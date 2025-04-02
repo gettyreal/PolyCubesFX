@@ -41,11 +41,12 @@ public class AppPanel extends Application {
       stage.show(); 
    }
 
-    public Scene createScene() {   
-        //setupping management of math part 
-        managementSetup();     
+    public Scene createScene() {       
         //setupping the grid containing the Polycube
         gridSetup();
+
+        //setupping management of math part 
+        managementSetup(); 
 
         //creating a new scene
         Scene scene = new Scene(grid, screenWidth, screenHeight);
@@ -55,7 +56,7 @@ public class AppPanel extends Application {
         scene.setOnMousePressed(event -> handleMousePressed(event));
         scene.setOnMouseDragged(event -> handleMouseDragged(event, grid));
 
-        //addPolyCube(management.polycubes.get(2));
+        //addPolyCube(management.polycubes.get(management.polycubes.size() - 40)); // add the last polycube to the grid
 
         return scene;
     }
@@ -64,7 +65,7 @@ public class AppPanel extends Application {
         this.management = new Management();
         Polycube inputPolycube = Management.generateBasic2Polycube();
         management.generatePolycubes(gridSize - 2, inputPolycube);
-        management.translatePolycubes();
+        //management.translatePolycubes();
         management.printPolycubes();
     }
 
