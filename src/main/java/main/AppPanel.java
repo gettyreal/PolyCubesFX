@@ -21,7 +21,7 @@ public class AppPanel extends Application {
 
     public final int cubeSize = 50;
     Group grid;
-    final int gridSize = 6;
+    final int gridSize = 4;
 
     private double lastX = 0;
     private double lastY = 0;
@@ -56,20 +56,16 @@ public class AppPanel extends Application {
         // handling mouse events
         scene.setOnMousePressed(event -> handleMousePressed(event));
         scene.setOnMouseDragged(event -> handleMouseDragged(event, grid));
-
-        int index = 0;
-
-        management.polycubes.get(index).printPolycube();
-        addPolyCube(management.polycubes.get(index));
         
         return scene;
     }
 
     void managementSetup() {
         this.management = new Management();
-        Polycube inputPolycube = Management.generateBasic2Polycube();
-        management.generatePolycubes(gridSize - 2, inputPolycube);
+        Polycube inputPolycube = new Polycube();
+        management.generatePolycubes(management.cubeNum - 1, inputPolycube);
         System.out.println("Polycubes generated: " + management.polycubes.size());
+        management.printPolycubes();
     }
 
     void gridSetup() {
@@ -122,7 +118,7 @@ public class AppPanel extends Application {
                     // Create a new Box (functioning as a cell) at position (x, y, z)
                     Box box = new Box(cubeSize, cubeSize, cubeSize); // create the cell
                     PhongMaterial cubeMaterial = new PhongMaterial(); // new material for transparent color
-                    cubeMaterial.setDiffuseColor(Color.web("#00000000"));
+                    cubeMaterial.setDiffuseColor(Color.web("#00FE0000"));
 
                     // set material and box coordinates
                     box.setTranslateX(x * cubeSize);
@@ -147,7 +143,6 @@ public class AppPanel extends Application {
                         PhongMaterial cubeMaterial = new PhongMaterial();
                         cubeMaterial.setDiffuseColor(Color.web("#69D1C5"));
                         box.setMaterial(cubeMaterial);
-                        System.out.println("Cube added at: " + cube.id);
                         break;
                     }
                 }

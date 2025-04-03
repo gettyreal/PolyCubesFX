@@ -2,11 +2,20 @@ package math;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Scanner;
 import java.util.Set;
 
 //class to manage polycumbes and confront them
 public class Management {
     public ArrayList<Polycube> polycubes = new ArrayList<Polycube>(); // list of all polycubes
+    public int cubeNum;
+
+    public Management() {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("inserire numero di cubi: ");
+        cubeNum = sc.nextInt();
+        sc.close();
+    }
 
     public void generatePolycubes(int cubeNum, Polycube inputPolyCube) {
         Set<Cube> filterCubes = new HashSet<>(inputPolyCube.cubes);
@@ -33,6 +42,7 @@ public class Management {
                         newCube.setCoordinates(cube.x, cube.y, cube.z - 1);
                         break;
                 }
+                
                 newCube.setID(newCube.x, newCube.y, newCube.z);
 
                 if (!isCubeInList(newCube, filterCubes)) {
@@ -42,8 +52,8 @@ public class Management {
                     Cube newMinCube = newPolyCube.calculateBoundingMinimumCube();
                     newPolyCube.translatePolycube(newMinCube); // translate the polycube to the minimum cube
 
-                    if (cubeNum == 1) { // no more cube to add
-                        if (!checkPolycube(newPolyCube)) {
+                    if (cubeNum == 1) { // no more cubes to add
+                        if (isPolycubeUnique(newPolyCube)) {
                             this.polycubes.add(newPolyCube);
                         }
                     } else {
@@ -54,18 +64,19 @@ public class Management {
         }
     }
 
-    public boolean checkPolycube(Polycube polycube) {
-        Polycube pivot = new Polycube(polycube); // copy the polycube to be compared
-        for (int xRotations = 0; xRotations < 4; xRotations++) {
-            for (int yRotations = 0; yRotations < 4; yRotations++) {
-                for (int zRotations = 0; zRotations < 4; zRotations++) {
+    public boolean isPolycubeUnique(Polycube polycube) {
+        Polycube pivot = new Polycube(polycube);
+
+        for (int x = 0; x < 4; x++) {
+            for (int y = 0; y < 4; y++) {
+                for (int z = 0; z < 4; z++) {
+
                     Cube minPivotCube = pivot.calculateBoundingMinimumCube();
                     pivot.translatePolycube(minPivotCube);
 
                     for (Polycube testPolycube : this.polycubes) {
-                        if (testPolycube.isEqual(pivot)) { // if a polycube in the list has equal coordinates to the
-                                                           // testPolyCube
-                            return true;
+                        if (testPolycube.isEqual(pivot)) {
+                            return false;
                         }
                     }
                     pivot.rotateZ(); // rotate around Z-axis
@@ -74,7 +85,7 @@ public class Management {
             }
             pivot.rotateX(); // rotate around X-axis
         }
-        return false;
+        return true;
 
     }
 
