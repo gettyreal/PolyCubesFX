@@ -5,7 +5,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
+import javafx.scene.shape.DrawMode;
 import javafx.scene.shape.Line;
+import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
@@ -29,8 +31,8 @@ public class AppPanel extends Application {
     Group grid;
     final int gridSize = 4;
 
-    private int groupOffsetX = 300;
-    private int groupOffsetY = 300;
+    private int groupOffsetX = 250;
+    private int groupOffsetY = 250;
 
     private double lastX = 0;
     private double lastY = 0;
@@ -67,6 +69,15 @@ public class AppPanel extends Application {
 
         // creating a new scene
         Group root = new Group();
+
+        String titleString = "PolyCubes with 4 cubes";
+        Text title = new Text(titleString);
+        title.setFill(Color.WHITE);
+        title.setStyle("-fx-font-size: 50px;");
+        title.setTranslateX(screenWidth / 2 - 256);
+        title.setTranslateY(100);
+        root.getChildren().add(title);
+
         for (Group polyCubeGrid : PolyCubes3D) {
             root.getChildren().add(polyCubeGrid);
         }
@@ -83,8 +94,8 @@ public class AppPanel extends Application {
     void managementSetup() {
         this.management = new Management();
         Polycube inputPolycube = new Polycube();
-        management.generatePolycubes(management.cubeNum - 1, inputPolycube);
-        System.out.println("Polycubes generated: " + management.polycubes.size());
+        management.generatePolycubes(gridSize - 1, inputPolycube);
+        System.out.println("Polycubes generated: " + management.polycubes.size() + '\n');
         management.printPolycubes();
     }
 
@@ -151,6 +162,7 @@ public class AppPanel extends Application {
                     Box box = new Box(cubeSize, cubeSize, cubeSize); // create the cell
                     PhongMaterial cubeMaterial = new PhongMaterial(); // new material for transparent color
                     cubeMaterial.setDiffuseColor(Color.web("#00000000"));
+                    box.setDrawMode(DrawMode.LINE); 
 
                     // set material and box coordinates
                     box.setTranslateX(x * cubeSize);
@@ -173,7 +185,7 @@ public class AppPanel extends Application {
                     Box box = (Box) grid.getChildren().get(i); // Safe cast
                     if (box.getId().equals(cube.id)) {
                         PhongMaterial cubeMaterial = new PhongMaterial();
-                        cubeMaterial.setDiffuseColor(Color.web("#69D1C5"));
+                        cubeMaterial.setDiffuseColor(Color.web("#000000"));
                         box.setMaterial(cubeMaterial);
                         break;
                     }

@@ -2,20 +2,12 @@ package math;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Scanner;
 import java.util.Set;
 
 //class to manage polycumbes and confront them
 public class Management {
     public ArrayList<Polycube> polycubes = new ArrayList<Polycube>(); // list of all polycubes
     public int cubeNum;
-
-    public Management() {
-        Scanner sc = new Scanner(System.in);
-        System.out.print("inserire numero di cubi: ");
-        cubeNum = sc.nextInt();
-        sc.close();
-    }
 
     public void generatePolycubes(int cubeNum, Polycube inputPolyCube) {
         Set<Cube> filterCubes = new HashSet<>(inputPolyCube.cubes);
