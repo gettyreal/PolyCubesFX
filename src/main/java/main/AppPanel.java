@@ -12,6 +12,11 @@ import javafx.stage.Stage;
 import math.Cube;
 import math.Management;
 import math.Polycube;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import javafx.application.Application;
 import javafx.scene.Group;
 
@@ -20,17 +25,22 @@ public class AppPanel extends Application {
     public final int screenHeight = 1000;
 
     public final int cubeSize = 50;
+    ArrayList<Group> PolyCubes3D;
     Group grid;
     final int gridSize = 4;
+
+    private int groupOffsetX = 300;
+    private int groupOffsetY = 300;
 
     private double lastX = 0;
     private double lastY = 0;
     private double angleX = 0;
     private double angleY = 0;
 
-    private Rotate rotateX;
-    private Rotate rotateY;
     private Translate translateRoot;
+
+    private Map<Group, Rotate> rotateXMap = new HashMap<>();
+    private Map<Group, Rotate> rotateYMap = new HashMap<>();
 
     Management management;
 
@@ -46,11 +56,21 @@ public class AppPanel extends Application {
         // math calculations
         managementSetup();
 
-        // setupping single grid
-        gridSetup();
+        this.PolyCubes3D = new ArrayList<Group>();
+        for(int i = 0; i < management.polycubes.size(); i++) {
+            gridSetup();
+        }
+
+        for(int i = 0; i < PolyCubes3D.size(); i++) {
+            addPolyCube(management.polycubes.get(i), PolyCubes3D.get(i));
+        }
 
         // creating a new scene
-        Scene scene = new Scene(grid, screenWidth, screenHeight);
+        Group root = new Group();
+        for (Group polyCubeGrid : PolyCubes3D) {
+            root.getChildren().add(polyCubeGrid);
+        }
+        Scene scene = new Scene(root, screenWidth, screenHeight);
         scene.setFill(Color.web("#252323"));
 
         // handling mouse events
@@ -70,21 +90,33 @@ public class AppPanel extends Application {
 
     void gridSetup() {
         // Creating group and scene to visualize the cubes
-        this.grid = new Group();
-        addAxes();
-        createCubeGrid(gridSize);
+        Group tempGrid = new Group();
+        addAxes(tempGrid);
+        createCubeGrid(gridSize, tempGrid);
 
         // Apply rotation transforms to the entire group
         final double gridOffset = gridSize * cubeSize / 2;
-        this.rotateX = new Rotate(0, gridOffset, gridOffset, gridOffset, Rotate.X_AXIS);
-        this.rotateY = new Rotate(0, gridOffset, gridOffset, gridOffset, Rotate.Y_AXIS);
-        this.translateRoot = new Translate(screenWidth / 2 - gridOffset, screenHeight / 2 - gridOffset, 0);
-        grid.getTransforms().add(translateRoot);
-        grid.getTransforms().addAll(rotateX, rotateY);
+        Rotate rotateX = new Rotate(0, gridOffset, gridOffset, gridOffset, Rotate.X_AXIS);
+        Rotate rotateY = new Rotate(0, gridOffset, gridOffset, gridOffset, Rotate.Y_AXIS);
+        this.rotateXMap.put(tempGrid, rotateX);
+        this.rotateYMap.put(tempGrid, rotateY);
+
+        this.translateRoot = new Translate(groupOffsetX, groupOffsetY, 0);
+        tempGrid.getTransforms().add(translateRoot);
+        tempGrid.getTransforms().addAll(rotateX, rotateY);
+
+        groupOffsetX += 400;
+
+        if (groupOffsetX > 1600) {
+            groupOffsetX = 300;
+            groupOffsetY += 400;
+        }
+
+        this.PolyCubes3D.add(tempGrid);
     }
 
     // function to create a grid of cubes
-    void addAxes() {
+    void addAxes(Group grid) {
         final int  axisLength = gridSize * cubeSize;
 
         // X-axis
@@ -111,14 +143,14 @@ public class AppPanel extends Application {
         grid.getChildren().add(zAxis);
     }
 
-    void createCubeGrid(int gridSize) {
+    void createCubeGrid(int gridSize, Group grid) {
         for (int x = 0; x < gridSize; x++) {
             for (int y = gridSize - 1; y >= 0; y--) {
                 for (int z = 0; z < gridSize; z++) {
                     // Create a new Box (functioning as a cell) at position (x, y, z)
                     Box box = new Box(cubeSize, cubeSize, cubeSize); // create the cell
                     PhongMaterial cubeMaterial = new PhongMaterial(); // new material for transparent color
-                    cubeMaterial.setDiffuseColor(Color.web("#00FE0000"));
+                    cubeMaterial.setDiffuseColor(Color.web("#00000000"));
 
                     // set material and box coordinates
                     box.setTranslateX(x * cubeSize);
@@ -134,7 +166,7 @@ public class AppPanel extends Application {
         }
     }
 
-    void addPolyCube(Polycube polycube) {
+    void addPolyCube(Polycube polycube, Group grid) {
         for (Cube cube : polycube.cubes) {
             for (int i = 0; i < grid.getChildren().size(); i++) {
                 if (grid.getChildren().get(i) instanceof Box) {
@@ -167,8 +199,12 @@ public class AppPanel extends Application {
         angleX += speedRotation * deltaY;
 
         // Apply rotations to the group transforms
-        rotateY.setAngle(angleY);
-        rotateX.setAngle(angleX);
+        for (Group polyCubeGrid : PolyCubes3D) {
+            Rotate rotateY = rotateYMap.get(polyCubeGrid);
+            Rotate rotateX = rotateXMap.get(polyCubeGrid);
+            rotateY.setAngle(angleY);
+            rotateX.setAngle(angleX);
+        }
 
         lastX = event.getSceneX();
         lastY = event.getSceneY();

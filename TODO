@@ -1,6 +1,5 @@
 TODO list
  
-- implementing rotation and translation methods to make final confrontation of each polycube
 - implementing a graphic interface to visualize all of the polycubes
     the inferface should be able to:
     - visualize the polycubes

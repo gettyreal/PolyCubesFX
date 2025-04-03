@@ -12,7 +12,7 @@ public class Management {
 
     public Management() {
         Scanner sc = new Scanner(System.in);
-        System.out.println("inserire numero di cubi: ");
+        System.out.print("inserire numero di cubi: ");
         cubeNum = sc.nextInt();
         sc.close();
     }
