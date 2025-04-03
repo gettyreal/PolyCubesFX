@@ -21,7 +21,7 @@ public class AppPanel extends Application {
 
     public final int cubeSize = 50;
     Group grid;
-    final int gridSize = 7;
+    final int gridSize = 4;
 
     private double lastX = 0;
     private double lastY = 0;
@@ -56,7 +56,13 @@ public class AppPanel extends Application {
         // handling mouse events
         scene.setOnMousePressed(event -> handleMousePressed(event));
         scene.setOnMouseDragged(event -> handleMouseDragged(event, grid));
-        addPolyCube(management.polycubes.get(1000000));
+
+        management.checkPolycube(null, management.polycubes.get(0));
+
+        int i = 6;
+
+        management.rotationPolycubes.get(i).printPolycube();
+        addPolyCube(management.rotationPolycubes.get(i));
 
         return scene;
     }
@@ -72,8 +78,8 @@ public class AppPanel extends Application {
     void gridSetup() {
         // Creating group and scene to visualize the cubes
         this.grid = new Group();
-        createCubeGrid(gridSize);
         addAxes();
+        createCubeGrid(gridSize);
 
         // Apply rotation transforms to the entire group
         final double gridOffset = gridSize * cubeSize / 2;
@@ -138,13 +144,15 @@ public class AppPanel extends Application {
     void addPolyCube(Polycube polycube) {
         for (Cube cube : polycube.cubes) {
             for (int i = 0; i < grid.getChildren().size(); i++) {
-                Box box = (Box) grid.getChildren().get(i);
-                if (box.getId().equals(cube.id)) {
-                    PhongMaterial cubeMaterial = new PhongMaterial();
-                    cubeMaterial.setDiffuseColor(Color.web("#69D1C5"));
-                    box.setMaterial(cubeMaterial);
-                    System.out.println("Cube added at: " + cube.id);
-                    break;
+                if (grid.getChildren().get(i) instanceof Box) {
+                    Box box = (Box) grid.getChildren().get(i); // Safe cast
+                    if (box.getId().equals(cube.id)) {
+                        PhongMaterial cubeMaterial = new PhongMaterial();
+                        cubeMaterial.setDiffuseColor(Color.web("#69D1C5"));
+                        box.setMaterial(cubeMaterial);
+                        System.out.println("Cube added at: " + cube.id);
+                        break;
+                    }
                 }
             }
         }

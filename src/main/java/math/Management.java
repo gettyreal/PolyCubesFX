@@ -9,6 +9,8 @@ public class Management {
     public ArrayList<Polycube> polycubes = new ArrayList<Polycube>(); // list of all polycubes
     public ArrayList<Polycube> finalPolycubes = new ArrayList<Polycube>();
 
+    public ArrayList<Polycube> rotationPolycubes = new ArrayList<Polycube>();
+
     public void generatePolycubes(int cubeNum, Polycube inputPolyCube) {
         Set<Cube> filterCubes = new HashSet<>(inputPolyCube.cubes);
         for (Cube cube : filterCubes) {
@@ -57,7 +59,8 @@ public class Management {
         }
     }
 
-    private boolean checkPolycube(Polycube pivot, Polycube testPolycube) {
+    public boolean checkPolycube(Polycube pivot, Polycube testPolycube) {
+        
         boolean isEqual = false;
         //sequence of rotations
         String[] rotationSequence = {
@@ -80,10 +83,14 @@ public class Management {
                     testPolycube.rotateZ();
                     break;
             }
-            if (pivot.isEqual(testPolycube)) {
-                isEqual = true;
-                break;
-            }
+            // if (pivot.isEqual(testPolycube)) {
+            //     isEqual = true;
+            //     break;
+            // }
+            Polycube pc = new Polycube(testPolycube);
+            Cube cube = pc.calculateBoundingMinimumCube();
+            pc.translatePolycube(cube);
+            rotationPolycubes.add(pc);
         }
         return isEqual;
     }

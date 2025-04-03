@@ -93,6 +93,7 @@ public class Polycube {
             int tempY = cube.y;
             cube.y = -cube.z;
             cube.z = tempY;
+            cube.setID(cube.x, cube.y, cube.z);
         }
     }
 
@@ -102,6 +103,7 @@ public class Polycube {
             int tempX = cube.x;
             cube.x = -cube.z;
             cube.z = tempX;
+            cube.setID(cube.x, cube.y, cube.z);
         }
     }
 
@@ -111,6 +113,7 @@ public class Polycube {
             int tempX = cube.x;
             cube.x = -cube.y;
             cube.y = tempX;
+            cube.setID(cube.x, cube.y, cube.z);
         }
     }
 
@@ -148,7 +151,7 @@ public class Polycube {
     public void printPolycube() {
         System.out.println("POLYCUBE");
         for (Cube cube : cubes) {
-            System.out.println("Cube at: " + cube.x + ", " + cube.y + ", " + cube.z + " with " + cube.freeSides + " free sides.");
+            System.out.println("Cube at: " + cube.x + ", " + cube.y + ", " + cube.z + ", id = " + cube.id);
         }
         System.out.println();
     }
