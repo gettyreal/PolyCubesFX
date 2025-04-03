@@ -21,7 +21,7 @@ public class AppPanel extends Application {
 
     public final int cubeSize = 50;
     Group grid;
-    final int gridSize = 4;
+    final int gridSize = 6;
 
     private double lastX = 0;
     private double lastY = 0;
@@ -43,10 +43,10 @@ public class AppPanel extends Application {
     }
 
     public Scene createScene() {
-        // setupping management of math part
+        // math calculations
         managementSetup();
 
-        // setupping the grid containing the Polycube
+        // setupping single grid
         gridSetup();
 
         // creating a new scene
@@ -57,13 +57,11 @@ public class AppPanel extends Application {
         scene.setOnMousePressed(event -> handleMousePressed(event));
         scene.setOnMouseDragged(event -> handleMouseDragged(event, grid));
 
-        management.checkPolycube(null, management.polycubes.get(0));
+        int index = 0;
 
-        int i = 6;
-
-        management.rotationPolycubes.get(i).printPolycube();
-        addPolyCube(management.rotationPolycubes.get(i));
-
+        management.polycubes.get(index).printPolycube();
+        addPolyCube(management.polycubes.get(index));
+        
         return scene;
     }
 
@@ -71,7 +69,6 @@ public class AppPanel extends Application {
         this.management = new Management();
         Polycube inputPolycube = Management.generateBasic2Polycube();
         management.generatePolycubes(gridSize - 2, inputPolycube);
-        management.translatePolycubes();
         System.out.println("Polycubes generated: " + management.polycubes.size());
     }
 

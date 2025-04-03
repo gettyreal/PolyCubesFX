@@ -28,7 +28,7 @@ public class Polycube {
         }
         if (isAdjacent) {
             cubes.add(new Cube(x, y, z));
-            calculateCubeAdjacency(); 
+            calculateCubeAdjacency();
         } else {
             System.out.println("not adjacent");
         }
@@ -45,7 +45,8 @@ public class Polycube {
             // check for each cube how many sides are shared with other cubes
             for (Cube otherCube : cubes) {
                 if (cube != otherCube) {
-                    if (Math.abs(cube.x - otherCube.x) + Math.abs(cube.y - otherCube.y) + Math.abs(cube.z - otherCube.z) == 1) {
+                    if (Math.abs(cube.x - otherCube.x) + Math.abs(cube.y - otherCube.y)
+                            + Math.abs(cube.z - otherCube.z) == 1) {
                         sharedSides++;
                     }
                 }
@@ -77,10 +78,9 @@ public class Polycube {
         Set<Cube> translatedCubes = new HashSet<>();
         for (Cube cube : this.cubes) {
             Cube translatedCube = new Cube(
-                cube.x - pivotX,
-                cube.y - pivotY,
-                cube.z - pivotZ
-            );
+                    cube.x - pivotX,
+                    cube.y - pivotY,
+                    cube.z - pivotZ);
             translatedCube.setID(translatedCube.x, translatedCube.y, translatedCube.z);
             translatedCubes.add(translatedCube);
         }
@@ -119,19 +119,23 @@ public class Polycube {
 
     public void translateX() {
         for (Cube cube : cubes) {
-            cube.x ++;
+            cube.x++;
+            cube.setID(cube.x, cube.y, cube.z);
         }
     }
 
     public void translateY() {
         for (Cube cube : cubes) {
-            cube.y ++;
+            cube.y++;
+            cube.setID(cube.x, cube.y, cube.z);
         }
     }
 
     public void translateZ() {
         for (Cube cube : cubes) {
-            cube.z ++;
+            cube.z++;
+            cube.setID(cube.x, cube.y, cube.z);
+
         }
     }
 
@@ -139,8 +143,15 @@ public class Polycube {
         if (this.cubes.size() != polycube.cubes.size()) {
             return false;
         }
+
         for (Cube cube : this.cubes) {
-            boolean found = polycube.cubes.stream().anyMatch(c -> c.isEqual(cube));
+            boolean found = false;
+            for (Cube otherCube : polycube.cubes) {
+                if (cube.id.equals(otherCube.id)) {
+                    found = true;
+                    break;
+                }
+            }
             if (!found) {
                 return false;
             }
