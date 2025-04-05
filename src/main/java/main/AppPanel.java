@@ -2,6 +2,7 @@ package main;
 
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
@@ -26,10 +27,12 @@ public class AppPanel extends Application {
     public final int screenWidth = 1920;
     public final int screenHeight = 1000;
 
+    Group grid;
+    Group root;
+
     public final int cubeSize = 50;
     ArrayList<Group> PolyCubes3D;
-    Group grid;
-    final int gridSize = 4;
+    final int gridSize = 5;
 
     private int groupOffsetX = 250;
     private int groupOffsetY = 250;
@@ -68,25 +71,21 @@ public class AppPanel extends Application {
         }
 
         // creating a new scene
-        Group root = new Group();
+        this.root = new Group();
 
-        String titleString = "PolyCubes with 4 cubes";
-        Text title = new Text(titleString);
-        title.setFill(Color.WHITE);
-        title.setStyle("-fx-font-size: 50px;");
-        title.setTranslateX(screenWidth / 2 - 256);
-        title.setTranslateY(100);
-        root.getChildren().add(title);
+        titleSetup();
 
         for (Group polyCubeGrid : PolyCubes3D) {
             root.getChildren().add(polyCubeGrid);
         }
+
         Scene scene = new Scene(root, screenWidth, screenHeight);
         scene.setFill(Color.web("#252323"));
 
-        // handling mouse events
+        // handling camera movement and zoom
         scene.setOnMousePressed(event -> handleMousePressed(event));
         scene.setOnMouseDragged(event -> handleMouseDragged(event, grid));
+        scene.setOnScroll(event -> handleMouseScroll(event));
         
         return scene;
     }
@@ -126,6 +125,16 @@ public class AppPanel extends Application {
         this.PolyCubes3D.add(tempGrid);
     }
 
+    void titleSetup() {
+        String titleString = "PolyCubes with " + gridSize + " cubes";
+        Text title = new Text(titleString);
+        title.setFill(Color.WHITE);
+        title.setStyle("-fx-font-size: 50px;");
+        title.setTranslateX(screenWidth / 2 - 256);
+        title.setTranslateY(100);
+        root.getChildren().add(title);
+    }
+
     // function to create a grid of cubes
     void addAxes(Group grid) {
         final int  axisLength = gridSize * cubeSize;
@@ -149,6 +158,7 @@ public class AppPanel extends Application {
         zAxis.getTransforms().add(new Rotate(90, Rotate.X_AXIS));
         zAxis.setStroke(Color.GREEN);
         zAxis.setStrokeWidth(3);
+
         zAxis.setTranslateZ(-25);
         zAxis.setTranslateY(axisLength - 25);
         grid.getChildren().add(zAxis);
@@ -220,5 +230,42 @@ public class AppPanel extends Application {
 
         lastX = event.getSceneX();
         lastY = event.getSceneY();
+    }
+
+    void handleMouseScroll(ScrollEvent event) {
+        double zoomFactor = 1.05;
+            double deltaY = event.getDeltaY();
+            double mouseX = event.getSceneX();
+            double mouseY = event.getSceneY();
+
+            for (Group polyCubeGrid : PolyCubes3D) {
+                double initialScaleX = polyCubeGrid.getScaleX();
+                double initialScaleY = polyCubeGrid.getScaleY();
+                double initialScaleZ = polyCubeGrid.getScaleZ();
+
+                double newScaleX = initialScaleX;
+                double newScaleY = initialScaleY;
+                double newScaleZ = initialScaleZ;
+
+                if (deltaY > 0) {
+                    // Zoom in
+                    newScaleX = initialScaleX * zoomFactor;
+                    newScaleY = initialScaleY * zoomFactor;
+                    newScaleZ = initialScaleZ * zoomFactor;
+                } else {
+                    // Zoom out
+                    newScaleX = initialScaleX / zoomFactor;
+                    newScaleY = initialScaleY / zoomFactor;
+                    newScaleZ = initialScaleZ / zoomFactor;
+                }
+
+                polyCubeGrid.setScaleX(newScaleX);
+                polyCubeGrid.setScaleY(newScaleY);
+                polyCubeGrid.setScaleZ(newScaleZ);
+
+                // Adjust the pivot point for zoom
+                polyCubeGrid.setTranslateX(polyCubeGrid.getTranslateX() + (mouseX - polyCubeGrid.getTranslateX()) * (initialScaleX - newScaleX) / initialScaleX);
+                polyCubeGrid.setTranslateY(polyCubeGrid.getTranslateY() + (mouseY - polyCubeGrid.getTranslateY()) * (initialScaleY - newScaleY) / initialScaleY);
+            }
     }
 }
