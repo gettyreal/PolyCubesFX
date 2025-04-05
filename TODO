@@ -1,9 +1,3 @@
 TODO list
- 
-- implementing a graphic interface to visualize all of the polycubes
-    the inferface should be able to:
-    - visualize the polycubes
-    - get a input of how many cube should be generated
-    - maybe the process of confrontation visualized (non necessary)
 
-- commenting and documenting the code to prevent ai accusations
+done

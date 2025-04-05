@@ -3,79 +3,67 @@ package math;
 import java.util.HashSet;
 import java.util.Set;
 
+// Polycube class
+// represent the Polycube as a set of cubes
 public class Polycube {
-    public Set<Cube> cubes = new HashSet<Cube>();
+    public Set<Cube> cubes = new HashSet<Cube>(); // al cubes contained in the polycube
 
-    // constructor
+    // default constructor
     public Polycube() {
         cubes.add(new Cube(0, 0, 0)); // add a default cube, to be remembered
     }
 
+    // constructor to copy a polycube
+    // take as parameter a polycube and copy it in the current obj
     public Polycube(Polycube polycube) {
         this.cubes = new HashSet<>(polycube.cubes); // copy the cubes from the input polycube
     }
 
-    // add cubes to the polyCube
-    public void addCube(int x, int y, int z) {
-        boolean isAdjacent = false;
-        // check if the cube is adjacent to any of the existing cubes in the
-        // polyCube
-        for (Cube cube : cubes) {
-            if (Math.abs(cube.x - x) + Math.abs(cube.y - y) + Math.abs(cube.z - z) == 1) {
-                isAdjacent = true;
-                break;
-            }
-        }
-        if (isAdjacent) {
-            cubes.add(new Cube(x, y, z));
-            calculateCubeAdjacency();
-        } else {
-            System.out.println("not adjacent");
-        }
-    }
-
+    // function to add a cube to the polycube
+    // take as parameter a cube and add it to the polycube
+    // does not check adjacency because it automatically is adjacent cause program
+    // structure
     public void addCube(Cube cube) {
         cubes.add(cube);
-        calculateCubeAdjacency(); // recalculate adjacency after adding a new cube
     }
 
-    public void calculateCubeAdjacency() {
-        int sharedSides = 0;
-        for (Cube cube : cubes) {
-            // check for each cube how many sides are shared with other cubes
-            for (Cube otherCube : cubes) {
-                if (cube != otherCube) {
-                    if (Math.abs(cube.x - otherCube.x) + Math.abs(cube.y - otherCube.y)
-                            + Math.abs(cube.z - otherCube.z) == 1) {
-                        sharedSides++;
-                    }
-                }
-            }
-            cube.freeSides = 6 - sharedSides; // update the number of free sides of the cube
-            sharedSides = 0; // reset the counter for the next cube
-        }
-    }
-
-    public Cube calculateBoundingMinimumCube() {
+    // function to calculate the minumum coordinates of the polycube
+    // return the stored coordinate in a cube object called "BoundingMinimumCube"
+    private Cube calculateBoundingMinimumCube() {
+        // sets max value possible (in case of 2147483647 cubes polycube (max found is
+        // 22 so not likely))
         int minX = Integer.MAX_VALUE;
         int minY = Integer.MAX_VALUE;
         int minZ = Integer.MAX_VALUE;
 
+        // for each cube check if it has min coordinates
         for (Cube cube : cubes) {
             minX = Math.min(minX, cube.x);
             minY = Math.min(minY, cube.y);
             minZ = Math.min(minZ, cube.z);
         }
 
-        return new Cube(minX, minY, minZ); // Ensure a new Cube object is created
+        // return the BoundingMinimumCube containing the min coordinates
+        return new Cube(minX, minY, minZ);
     }
 
-    public void translatePolycube(Cube translationPivotCube) {
-        int pivotX = translationPivotCube.x;
-        int pivotY = translationPivotCube.y;
-        int pivotZ = translationPivotCube.z;
+    // function to translate the polycube to positive coordinates
+    
+    // functioning:
+    // 1) get the minimum coordinates of the polycube by the
+    // calculateBoundingMinimumCube function
+    // 2) for each cube in the polycube translate it to positive coordinates by
+    // subtracting the min(<= 0) coordinates
+    // 3) replace the cubes in the polycube with the translated cubes
+    public void translatePolycube() {
+        Cube translationPivotCube = calculateBoundingMinimumCube(); // get the minimum cube to translate the polycube
 
-        Set<Cube> translatedCubes = new HashSet<>();
+        int pivotX = translationPivotCube.x; // gets min x 
+        int pivotY = translationPivotCube.y; // gets min y
+        int pivotZ = translationPivotCube.z; // gets min z
+
+        Set<Cube> translatedCubes = new HashSet<>(); // creates new hashset to not mess up memory allocation
+        // for each cube creates a copy translated and adds it to the new hashset
         for (Cube cube : this.cubes) {
             Cube translatedCube = new Cube(
                     cube.x - pivotX,
@@ -84,9 +72,13 @@ public class Polycube {
             translatedCube.setID(translatedCube.x, translatedCube.y, translatedCube.z);
             translatedCubes.add(translatedCube);
         }
-        this.cubes = translatedCubes; // Replace with translated cubes
+        // update this.cubes with the new translated hashset of cubes
+        this.cubes = translatedCubes;
     }
 
+    // ROTATIONS
+
+    // funtion to rotate the polycube around the x axis
     public void rotateX() {
         for (Cube cube : cubes) {
             // rotate the cube around the x-axis
@@ -97,6 +89,7 @@ public class Polycube {
         }
     }
 
+    // function to rotate the polycube around the y axis
     public void rotateY() {
         for (Cube cube : cubes) {
             // rotate the cube around the y-axis
@@ -107,6 +100,7 @@ public class Polycube {
         }
     }
 
+    // function to rotate the polycube around the z axis
     public void rotateZ() {
         for (Cube cube : cubes) {
             // rotate the cube around the z-axis
@@ -117,6 +111,9 @@ public class Polycube {
         }
     }
 
+    // TRANSLATIONS
+
+    // function to translate the polycube along the x axis
     public void translateX() {
         for (Cube cube : cubes) {
             cube.x++;
@@ -124,6 +121,7 @@ public class Polycube {
         }
     }
 
+    // function to translate the polycube along the y axis
     public void translateY() {
         for (Cube cube : cubes) {
             cube.y++;
@@ -131,6 +129,7 @@ public class Polycube {
         }
     }
 
+    // function to translate the polycube along the z axis
     public void translateZ() {
         for (Cube cube : cubes) {
             cube.z++;
@@ -139,11 +138,15 @@ public class Polycube {
         }
     }
 
+
+    // function to check if two polycubes are equal
+    // gets as parameter the polycube to check
     public boolean isEqual(Polycube polycube) {
-        if (this.cubes.size() != polycube.cubes.size()) {
+        if (this.cubes.size() != polycube.cubes.size()) { // 1) if polycubes have different number of cubes they are not equal
             return false;
         }
 
+        // checks for each cube in the 2 poltycube if they are equal
         for (Cube cube : this.cubes) {
             boolean found = false;
             for (Cube otherCube : polycube.cubes) {
@@ -159,6 +162,7 @@ public class Polycube {
         return true;
     }
 
+    // function to print the polycube in the terminal
     public void printPolycube() {
         System.out.println("POLYCUBE");
         for (Cube cube : cubes) {
