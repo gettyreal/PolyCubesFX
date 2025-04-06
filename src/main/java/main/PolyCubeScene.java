@@ -8,7 +8,6 @@ import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 import javafx.scene.shape.DrawMode;
 import javafx.scene.shape.Line;
-import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
@@ -20,19 +19,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import javafx.application.Application;
 import javafx.scene.Group;
 
-public class AppPanel extends Application {
+public class PolyCubeScene{
     public final int screenWidth = 1920; // width of the screen
     public final int screenHeight = 1000; // height of the screen
 
+    public Stage stage;
     Group root; //root group used to create the scene
 
     public final int cubeSize = 50; //default px cube size
     ArrayList<Group> PolyCubes3D; //array contaning all possible polycubes in 3d
     
-    final int gridSize = 5; // variable to set the size of the grid  and also the 
+    final int gridSize; // variable to set the size of the grid  and also the 
     // number of cubes in the polycube
 
     private int groupOffsetX = 250; // star offset x of grid in scene
@@ -54,12 +53,10 @@ public class AppPanel extends Application {
     // management obj for math part of the programm
     Management management;
 
-    // function to start the application
-    @Override
-    public void start(Stage stage) {
-        stage.setTitle("PolyCubes");
-        stage.setScene(createScene());
-        stage.show();
+    // constructor
+    // take as parameter the grid size (equivalent to CubeNum)
+    public PolyCubeScene(int gridSize) {
+        this.gridSize = gridSize;
     }
 
     // function to create the starting scene
@@ -72,12 +69,11 @@ public class AppPanel extends Application {
         managementSetup();
 
         // visyal setup
-        titleSetup();
         polycubes3dSetup();
 
         // scene creation and setup
         Scene scene = new Scene(root, screenWidth, screenHeight);
-        scene.setFill(Color.web("#252323"));
+        scene.setFill(Color.web("#292F36"));
 
         // handling camera movement and zoom
         scene.setOnMousePressed(event -> handleMousePressed(event));
@@ -155,17 +151,6 @@ public class AppPanel extends Application {
         this.PolyCubes3D.add(tempGrid);
     }
 
-    // function to create the title of the application
-    void titleSetup() {
-        String titleString = "PolyCubes with " + gridSize + " cubes";
-        Text title = new Text(titleString);
-        title.setFill(Color.WHITE);
-        title.setStyle("-fx-font-size: 50px;");
-        title.setTranslateX(screenWidth / 2 - 256);
-        title.setTranslateY(100);
-        root.getChildren().add(title);
-    }
-
     // function to create the axes of a single grid
     void addAxes(Group grid) {
         final int axisLength = gridSize * cubeSize; //calculates the axis lenght
@@ -173,13 +158,13 @@ public class AppPanel extends Application {
         // X-axis
         Line xAxis = new Line(-25, axisLength - 25, axisLength + 25, axisLength - 25);
         xAxis.setTranslateZ(-25);
-        xAxis.setStroke(Color.RED);
+        xAxis.setStroke(Color.web("#EF2D56"));
         xAxis.setStrokeWidth(3);
         grid.getChildren().add(xAxis);
 
         // Y-axis
         Line yAxis = new Line(-25, -75, -25, axisLength - 25);
-        yAxis.setStroke(Color.BLUE);
+        yAxis.setStroke(Color.web("#2FBF71"));
         yAxis.setStrokeWidth(3);
         yAxis.setTranslateZ(-25);
         grid.getChildren().add(yAxis);
@@ -187,7 +172,7 @@ public class AppPanel extends Application {
         // Z-axis
         Line zAxis = new Line(-25, 0, -25, axisLength + 75);
         zAxis.getTransforms().add(new Rotate(90, Rotate.X_AXIS));
-        zAxis.setStroke(Color.GREEN);
+        zAxis.setStroke(Color.web("#1D4E89"));
         zAxis.setStrokeWidth(3);
 
         zAxis.setTranslateZ(-25);
